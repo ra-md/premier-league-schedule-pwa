@@ -1,0 +1,72 @@
+.mx-2 {
+	margin: 0.5em;
+}
+
+.btn-simpan,
+.btn-hapus {
+	color: white;
+	font-size: 14px;
+	background: #69f0ae;
+	padding: 5px;
+  border-radius: 2px;
+  box-shadow: 0 2px 2px 0 rgba(0,0,0,0.14), 0 3px 1px -2px rgba(0,0,0,0.12), 0 1px 5px 0 rgba(0,0,0,0.2);
+  cursor: pointer;
+  transition: transform 0.1s;
+}
+
+.btn-hapus {
+  background: #e53935;
+}
+
+.btn-simpan:hover,
+.btn-hapus:hover {
+	opacity: 0.8;
+}
+
+.btn-simpan:active,
+.btn-hapus:active {
+	transform: scale(1.2);
+}
+
+.xy-center {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
+
+.lds-circle {
+  display: inline-block;
+}
+
+.lds-circle > div {
+  display: inline-block;
+  width: 64px;
+  height: 64px;
+  margin: 8px;
+  border-radius: 50%;
+  background: #69f0ae;
+  animation: lds-circle 2.4s cubic-bezier(0, 0.2, 0.8, 1) infinite;
+}
+
+@keyframes lds-circle {
+  0%, 100% {
+    animation-timing-function: cubic-bezier(0.5, 0, 1, 0.5);
+  }
+  0% {
+    transform: rotateY(0deg);
+  }
+  50% {
+    transform: rotateY(1800deg);
+    animation-timing-function: cubic-bezier(0, 0.5, 0.5, 1);
+  }
+  100% {
+    transform: rotateY(3600deg);
+  }
+}
+
+@media (max-width: 768px) {
+	.row .col.responsive {
+		width: 100%
+	}
+}

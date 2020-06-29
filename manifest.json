@@ -1,0 +1,21 @@
+{
+	"name":"Info Premier League",
+	"short_name":"IFL",
+  "description": "Informasi tentang jadwal dan kelasemen Premier League",
+  "start_url": "/index.html",
+  "display": "standalone",
+  "background_color": "#69f0ae",
+  "theme_color": "#69f0ae",
+	"icons":[
+		{
+			"src":"/icon/android-chrome-192x192.png",
+			"sizes":"192x192",
+			"type":"image/png"
+		},
+		{
+			"src":"/icon/android-chrome-512x512.png",
+			"sizes":"512x512",
+			"type":"image/png"
+		}
+	]
+}
