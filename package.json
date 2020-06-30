@@ -1,0 +1,22 @@
+{
+  "name": "submission-2",
+  "version": "1.0.0",
+  "description": "",
+  "main": "push.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ra-md/simple-pwa-info-football.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/ra-md/simple-pwa-info-football/issues"
+  },
+  "homepage": "https://github.com/ra-md/simple-pwa-info-football#readme",
+  "devDependencies": {
+    "web-push": "^3.4.4"
+  }
+}

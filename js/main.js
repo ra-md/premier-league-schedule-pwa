@@ -1,5 +1,6 @@
 import './idb.js';
 import './nav.js';
+import urlBase64ToUint8Array from './utils/urlBase64ToUint8Array.js';
 
 if ('serviceWorker' in navigator) {
   window.addEventListener('load', () => {
@@ -15,3 +16,36 @@ if ('serviceWorker' in navigator) {
 } else {
   console.log('ServiceWorker belum didukung browser ini');
 };
+
+if ('Notification' in window) {
+  Notification.requestPermission().then(result => {
+    if (result === "denied") {
+      console.log("Fitur notifikasi tidak diijinkan.");
+      return;
+    } else if (result === "default") {
+      console.error("Pengguna menutup kotak dialog permintaan ijin.");
+      return;
+    }
+
+    navigator.serviceWorker.getRegistration().then(reg => {
+        reg.showNotification('Notifikasi diijinkan!');
+    });
+  });
+}
+
+if (('PushManager' in window)) {
+    navigator.serviceWorker.getRegistration().then(registration => {
+        registration.pushManager.subscribe({
+            userVisibleOnly: true,
+            applicationServerKey: urlBase64ToUint8Array('BPYpSwZ0L-N1vYicgdPpYAtg8L1Uwh1Sm1TgxTyVhCseWsT2Gr8ev_ULEHEthcvtkI2cq2IsbQF99bJcDwgil_Y')
+        }).then(subscribe => {
+            console.log('Berhasil melakukan subscribe dengan endpoint: ', subscribe.endpoint);
+            console.log('Berhasil melakukan subscribe dengan p256dh key: ', btoa(String.fromCharCode.apply(
+                null, new Uint8Array(subscribe.getKey('p256dh')))));
+            console.log('Berhasil melakukan subscribe dengan auth key: ', btoa(String.fromCharCode.apply(
+                null, new Uint8Array(subscribe.getKey('auth')))));
+        }).catch(e => {
+            console.error('Tidak dapat melakukan subscribe ', e.message);
+        });
+    });
+}
