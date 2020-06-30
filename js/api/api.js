@@ -8,20 +8,21 @@ const headers = {
 function getSchedule() {
 	return new Promise(resolve => {
 
+		const url = `${API_URL}/competitions/2021/matches?status=SCHEDULED`;
+
 		if('caches' in window) {
-			caches.match(API_URL)
+			caches.match(url)
 			.then(res => {
 				if(res) {
 					res.json()
 					.then((json) => {
-						console.log(json)
 						resolve(json.matches)
 					})
 				}
 			})
 		}
 
-		fetch(`${API_URL}/competitions/2021/matches?status=SCHEDULED`, { headers })
+		fetch(url, { headers })
 			.then(res => res.json())
 			.then(async json => {
 				const { matches } = await json;
@@ -31,8 +32,22 @@ function getSchedule() {
 };
 
 function getStandings() {
+	const url = `${API_URL}/competitions/2021/standings`;
+
 	return new Promise(resolve => {
-		fetch(`${API_URL}/competitions/2021/standings`, {headers})
+		if('caches' in window) {
+			caches.match(url)
+			.then(res => {
+				if(res) {
+					res.json()
+					.then((json) => {
+						resolve(json.standings[0].table)
+					})
+				}
+			})
+		}
+
+		fetch(url, {headers})
 			.then(res => res.json())
 			.then(json => {
 				const { standings } = json;

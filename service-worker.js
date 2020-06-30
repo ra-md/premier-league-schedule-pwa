@@ -1,6 +1,9 @@
 const CACHE_NAME = 'info-pl-v1';
 const urlsToCache = [
   '/',
+  '/js/api/api.js',
+  '/service-worker.js',
+  '/js/main.js',
   '/css/materialize.min.css',
   '/css/style.css',
   '/icon/android-chrome-192x192.png',
@@ -9,7 +12,6 @@ const urlsToCache = [
   '/icon/favicon-16x16.png',
   '/icon/favicon-32x32.png',
   '/icon/favicon.ico',
-  '/js/api/api.js',
   '/js/pages/loadJadwal.js',
   '/js/pages/loadJadwalYangDisimpan.js',
   '/js/pages/loadKelasemen.js',
@@ -17,7 +19,6 @@ const urlsToCache = [
   '/js/utils/loading.js',
   '/js/idb.js',
   '/js/loadPage.js',
-  '/js/main.js',
   '/js/materialize.min.js',
   '/js/nav.js',
   '/js/uuidv4.min.js',
@@ -26,45 +27,52 @@ const urlsToCache = [
   '/pages/kelasemen.html',
   '/index.html',
   '/manifest.json',
-  '/nav.html',
-  '/service-worker.js',
+  '/nav.html'
 ];
+
+const API_TOKEN = '326e766c25414180b4cd22c1e4b187b4';
+const API_URL = 'https://api.football-data.org/v2';
+
+const headers = {
+  'X-Auth-Token': API_TOKEN
+};
 
 self.addEventListener('install', event => {
   event.waitUntil(
-    caches.open(CACHE_NAME).then(cache =>{
+    caches.open(CACHE_NAME).then(async cache => {
+      const jadawalUrl = `${API_URL}/competitions/2021/matches?status=SCHEDULED`;
+      const kelasemenUrl = `${API_URL}/competitions/2021/standings`;
+      
+      const resJadwal = await fetch(jadawalUrl, { headers });
+      cache.put(jadawalUrl, resJadwal.clone());
+
+      const resKelasemen = await fetch(kelasemenUrl, { headers })
+      cache.put(kelasemenUrl, resKelasemen.clone());
+
       return cache.addAll(urlsToCache);
     })
   );
 });
 
+// dynamic fetch tidak berjalan saat pertama kali dibuka dibrowser jadi saya tidak menggunakan dynamic cache
+// harus pencet f5 baru jalan
 self.addEventListener('fetch', event => {
-  const base_url = 'https://api.football-data.org/v2';
-  
-  const API_TOKEN = '326e766c25414180b4cd22c1e4b187b4';
-
-  const headers = {
-    'X-Auth-Token': API_TOKEN
-  }; 
-
-  // change indexOf() to includes()
-
-  if (event.request.url.indexOf(base_url) > -1) {
-    event.respondWith(
-      caches.open(CACHE_NAME).then(cache => {
-        return fetch(event.request, { headers }).then(response => {
-          cache.put(base_url, response.clone());
-          return response
-        })
-      })
-    );
-  } else {
+  // if (event.request.url.includes(API_URL)) {
+  //   event.respondWith(
+  //     caches.open(CACHE_NAME).then(cache => {
+  //       return fetch(event.request).then(response => {
+  //         cache.put(event.request.url, response.clone());
+  //         return response
+  //       })
+  //     })
+  //   );
+  // } else {
     event.respondWith(
       caches.match(event.request, { ignoreSearch: true }).then(response => {
         return response || fetch (event.request);
       })
     );
-  }
+  // }
 });
 
 self.addEventListener('activate', event => {
