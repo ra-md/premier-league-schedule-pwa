@@ -10,34 +10,6 @@ function loadJadwal() {
 	if(content) {
 		loading(content);
 
-		// if('caches' in window) {
-		// 	caches.match(API_URL).then(res => {
-		// 		if(res) {
-		// 			res.json()
-		// 				.then(json => {
-		// 					json.matches.forEach(match => {
-		// 						const convertToLocal = new Date(match.utcDate);
-		// 						const date = convertToLocal.toString().split(' ').splice(0,5).join(' ');
-								
-		// 						content.innerHTML += `
-		// 							<div class="col s6 responsive">
-		// 								<div class="card">
-		// 									<h6 class="left mx-2">${date}</h6>
-		// 									<h6 class="right mx-2 btn-simpan">Simpan</h6>
-		// 							    <div class="card-content">
-		// 							    	<h5 class="center-align">${match.homeTeam.name}</h5>
-		// 					    			<h6 class="center-align">vs</h6>
-		// 							    	<h5 class="center-align">${match.awayTeam.name}</h5>
-		// 							    </div>
-		// 							  </div>
-		// 							</div>`;
-		// 					})
-
-		// 				})
-		// 		}
-		// 	})
-		// }
-
 		api.getSchedule()
 			.then(matches => {
 

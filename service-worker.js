@@ -54,25 +54,17 @@ self.addEventListener('install', event => {
   );
 });
 
-// dynamic fetch tidak berjalan saat pertama kali dibuka dibrowser jadi saya tidak menggunakan dynamic cache
-// harus pencet f5 baru jalan
 self.addEventListener('fetch', event => {
-  // if (event.request.url.includes(API_URL)) {
-  //   event.respondWith(
-  //     caches.open(CACHE_NAME).then(cache => {
-  //       return fetch(event.request).then(response => {
-  //         cache.put(event.request.url, response.clone());
-  //         return response
-  //       })
-  //     })
-  //   );
-  // } else {
-    event.respondWith(
-      caches.match(event.request, { ignoreSearch: true }).then(response => {
-        return response || fetch (event.request);
+  event.respondWith(
+    caches
+      .match(event.request, { cacheName: CACHE_NAME })
+      .then(response => {
+        if (response) {
+          return response;
+        }
+        return fetch(event.request);
       })
-    );
-  // }
+  );
 });
 
 self.addEventListener('activate', event => {
