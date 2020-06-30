@@ -11,7 +11,7 @@ const urlsToCache = [
   '/icon/apple-touch-icon.png',
   '/icon/favicon-16x16.png',
   '/icon/favicon-32x32.png',
-  '/icon/favicon.ico',
+  '/favicon.ico',
   '/js/pages/loadJadwal.js',
   '/js/pages/loadJadwalYangDisimpan.js',
   '/js/pages/loadKelasemen.js',
