@@ -1,86 +1,67 @@
-const CACHE_NAME = 'info-pl-v1';
-const urlsToCache = [
-  '/',
-  '/js/api/api.js',
-  '/service-worker.js',
-  '/js/main.js',
-  '/css/materialize.min.css',
-  '/css/style.css',
-  '/icon/android-chrome-192x192.png',
-  '/icon/android-chrome-512x512.png',
-  '/icon/apple-touch-icon.png',
-  '/icon/favicon-16x16.png',
-  '/icon/favicon-32x32.png',
-  '/favicon.ico',
-  '/js/pages/loadJadwal.js',
-  '/js/pages/loadJadwalYangDisimpan.js',
-  '/js/pages/loadKelasemen.js',
-  '/js/utils/db.js',
-  '/js/utils/loading.js',
-  '/js/idb.js',
-  '/js/loadPage.js',
-  '/js/materialize.min.js',
-  '/js/nav.js',
-  '/js/uuidv4.min.js',
-  '/pages/jadwal-yang-disimpan.html',
-  '/pages/jadwal.html',
-  '/pages/kelasemen.html',
-  '/index.html',
-  '/manifest.json',
-  '/nav.html'
-];
+importScripts('js/lib/workbox-sw.js');
 
-const API_TOKEN = '326e766c25414180b4cd22c1e4b187b4';
-const API_URL = 'https://api.football-data.org/v2';
+if (workbox) {
+  console.log('Workbox berhasil dimuat');
+  
+  workbox.precaching.precacheAndRoute([
+    { url: '/css/materialize.min.css', revision: '1' },
+    { url: '/css/style.css', revision: '1' },
+    { url: '/icon/android-chrome-192x192.png', revision: '1' },
+    { url: '/icon/android-chrome-512x512.png', revision: '1' },
+    { url: '/icon/apple-touch-icon.png', revision: '1' },
+    { url: '/icon/favicon-16x16.png', revision: '1' },
+    { url: '/icon/favicon-32x32.png', revision: '1' },
+    { url: '/js/api/api.js', revision: '1' },
+    { url: '/js/lib/idb.js', revision: '1' },
+    { url: '/js/lib/materialize.min.js', revision: '1' },
+    { url: '/js/lib/workbox-sw.js', revision: '1' },
+    { url: '/js/pages/loadJadwal.js', revision: '1' },
+    { url: '/js/pages/loadJadwalYangDisimpan.js', revision: '1' },
+    { url: '/js/pages/loadKelasemen.js', revision: '1' },
+    { url: '/js/utils/db.js', revision: '1' },
+    { url: '/js/utils/loading.js', revision: '1' },
+    { url: '/js/utils/urlBase64ToUint8Array.js', revision: '1' },
+    { url: '/js/loadPage.js', revision: '1' },
+    { url: '/js/main.js', revision: '1' },
+    { url: '/js/nav.js', revision: '1' },
+    { url: '/favicon.ico', revision: '1' },
+    { url: '/index.html', revision: '1' },
+    { url: '/manifest.json', revision: '1' },
+    { url: '/nav.html', revision: '1' },
+    { url: '/service-worker.js', revision: '1' }
+  ], {
+    ignoreURLParametersMatching: [/.*/]
+  });
 
-const headers = {
-  'X-Auth-Token': API_TOKEN
-};
-
-self.addEventListener('install', event => {
-  event.waitUntil(
-    caches.open(CACHE_NAME).then(async cache => {
-      const jadawalUrl = `${API_URL}/competitions/2021/matches?status=SCHEDULED`;
-      const kelasemenUrl = `${API_URL}/competitions/2021/standings`;
-      
-      const resJadwal = await fetch(jadawalUrl, { headers });
-      cache.put(jadawalUrl, resJadwal.clone());
-
-      const resKelasemen = await fetch(kelasemenUrl, { headers })
-      cache.put(kelasemenUrl, resKelasemen.clone());
-
-      return cache.addAll(urlsToCache);
-    })
-  );
-});
-
-self.addEventListener('fetch', event => {
-  event.respondWith(
-    caches
-      .match(event.request, { cacheName: CACHE_NAME })
-      .then(response => {
-        if (response) {
-          return response;
-        }
-        return fetch(event.request);
-      })
-  );
-});
-
-self.addEventListener('activate', event => {
-  event.waitUntil(
-    caches.keys().then(cacheNames => {
-      return Promise.all(
-        cacheNames.map(cacheName => {
-          if (cacheName != CACHE_NAME) {
-            console.log(`ServiceWorker: cache ${cacheName} dihapus`);
-            return caches.delete(cacheName);
-          }
+  workbox.routing.registerRoute(
+    ({url}) => url.origin === 'https://api.football-data.org',
+    new workbox.strategies.StaleWhileRevalidate({
+      cacheName: 'api',
+      plugins: [
+        new workbox.expiration.ExpirationPlugin({
+          maxAgeSeconds: 60 * 60 * 24 * 365
         })
-      );
+      ]
     })
   );
-});
+
+  workbox.routing.registerRoute(
+    ({url}) => url.origin === 'https://upload.wikimedia.org',
+    new workbox.strategies.CacheFirst({
+      cacheName: 'icon-club'
+    })
+  );
+
+  workbox.routing.registerRoute(
+    new RegExp('/pages/'),
+    new workbox.strategies.CacheFirst({
+      cacheName: 'pages'
+    })
+  );
+}
+else {
+  console.log('Workbox gagal dimuat');
+}
 
 self.addEventListener('push', event => {
   let body;

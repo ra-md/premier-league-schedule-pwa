@@ -11,7 +11,7 @@ async function loadJadwalYangDisimpan() {
 		} else {
 			content.innerHTML = '';
 			for(let jadwal of semuaJadwal) {
-				content.innerHTML += jadwal.matchDenganBtnHapus;
+				content.innerHTML += jadwal.match;
 			}
 			hapusJadwal();
 		};

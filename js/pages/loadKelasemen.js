@@ -47,7 +47,10 @@ function loadKelasemen() {
 				for(let standing of standings) {
 					tableBody.innerHTML += `
 				    <tr>
-				    	<td>${standing.position} ${standing.team.name}</td>
+				    	<td>
+				    		${standing.position} ${standing.team.name}
+				    		<img class="m-2" src="${standing.team.crestUrl.replace(/^http:\/\//i, 'https://')}" width="30px" alt="badge"/>
+				    	</td>
 				    	<td>${standing.playedGames}</td>
 				    	<td>${standing.won}</td>
 				    	<td>${standing.draw}</td>

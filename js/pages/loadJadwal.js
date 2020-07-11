@@ -11,7 +11,7 @@ function loadJadwal() {
 		loading(content);
 
 		api.getSchedule()
-			.then(matches => {
+			.then(async matches => {
 
 				loading(content, '');
 
@@ -19,11 +19,13 @@ function loadJadwal() {
 					const convertToLocal = new Date(match.utcDate);
 					const date = convertToLocal.toString().split(' ').splice(0,5).join(' ');
 
+					const apakahSudahAdaDiIndexedDB = await db.getById(match.id.toString());
+
 					content.innerHTML += `
 						<div class="col s6 responsive">
 							<div class="card">
-								<h6 class="left mx-2">${date}</h6>
-								<h6 class="right mx-2 btn-simpan">Simpan</h6>
+								<h6 class="left m-2">${date}</h6>
+								<button ${apakahSudahAdaDiIndexedDB ? 'disabled':''} id="${match.id}" class="right m-2 btn-simpan">Simpan</button>
 						    <div class="card-content">
 						    	<h5 class="center-align">${match.homeTeam.name}</h5>
 				    			<h6 class="center-align">vs</h6>
@@ -44,13 +46,20 @@ function saveMatch() {
 	const buttons = document.querySelectorAll('.btn-simpan');
 
 	buttons.forEach(btn => {
-		btn.addEventListener('click', event => {
+		btn.addEventListener('click', async event => {
+			const matchDenganBtnHapus = event.path[1].outerHTML.replace(/simpan/gi, 'hapus');
 
-			db.save(event.path[1].outerHTML)
+			const obj = {
+				id: btn.id,
+				match: matchDenganBtnHapus
+			}
+
+			db.save(obj)
 				.then(res => {
 					M.toast({html: res});
 				});
 
+			btn.setAttribute('disabled', '');
 		});
 	});
 };

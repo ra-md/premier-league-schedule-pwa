@@ -1,5 +1,3 @@
-import '../uuidv4.min.js';
-
 const dbPromised = idb.open('info-pl', 1, upgradeDb => {
   const matchesStore = upgradeDb.createObjectStore('matches', { keyPath: 'id' });
   matchesStore.createIndex('id', 'id', { unique: false });
@@ -14,28 +12,14 @@ async function matchesStore(type) {
 }
 
 async function save(match) {
-
-	const id = uuidv4();
-
-	const matchDenganBtnHapus = match.replace(
-		`<h6 class="right mx-2 btn-simpan">Simpan</h6>`, 
-		`<h6 id="${id}" class="right mx-2 btn-hapus">Hapus</h6>`
-	);
-		
-	const obj = {
-		id,
-		matchDenganBtnHapus
-	};
-
 	return new Promise(async resolve => {
 		const store = await matchesStore('readwrite');
 
-		store.add(obj);
+		store.put(match);
 
 		resolve('Berhasil disimpan');
 	});
-
-};
+}
 
 function getAll() {
   return new Promise(async resolve => {
@@ -45,7 +29,14 @@ function getAll() {
 
     resolve(allData);
   });
-};
+}
+
+function getById(id) {
+	return new Promise(async resolve => {
+		const store = await matchesStore('readonly');
+		resolve(store.get(id));
+	});
+}
 
 function deleteJadwal(id) {
 	return new Promise(async resolve => {
@@ -54,7 +45,7 @@ function deleteJadwal(id) {
     store.delete(id);
 
     resolve('Berhasil dihapus');
-	})
-};
+	});
+}
 
-export default { save, getAll, deleteJadwal };
+export default { save, getAll, deleteJadwal, getById };

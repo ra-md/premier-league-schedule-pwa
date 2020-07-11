@@ -1,4 +1,4 @@
-import './idb.js';
+import './lib/idb.js';
 import './nav.js';
 import urlBase64ToUint8Array from './utils/urlBase64ToUint8Array.js';
 
@@ -27,25 +27,19 @@ if ('Notification' in window) {
       return;
     }
 
-    navigator.serviceWorker.getRegistration().then(reg => {
-        reg.showNotification('Notifikasi diijinkan!');
-    });
-  });
-}
-
-if (('PushManager' in window)) {
     navigator.serviceWorker.getRegistration().then(registration => {
         registration.pushManager.subscribe({
             userVisibleOnly: true,
             applicationServerKey: urlBase64ToUint8Array('BPYpSwZ0L-N1vYicgdPpYAtg8L1Uwh1Sm1TgxTyVhCseWsT2Gr8ev_ULEHEthcvtkI2cq2IsbQF99bJcDwgil_Y')
         }).then(subscribe => {
-            console.log('Berhasil melakukan subscribe dengan endpoint: ', subscribe.endpoint);
-            console.log('Berhasil melakukan subscribe dengan p256dh key: ', btoa(String.fromCharCode.apply(
+            console.log('endpoint: ', subscribe.endpoint);
+            console.log('p256dh key: ', btoa(String.fromCharCode.apply(
                 null, new Uint8Array(subscribe.getKey('p256dh')))));
-            console.log('Berhasil melakukan subscribe dengan auth key: ', btoa(String.fromCharCode.apply(
+            console.log('auth key: ', btoa(String.fromCharCode.apply(
                 null, new Uint8Array(subscribe.getKey('auth')))));
         }).catch(e => {
-            console.error('Tidak dapat melakukan subscribe ', e.message);
+            console.error(e.message);
         });
     });
+  });
 }

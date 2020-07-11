@@ -1,5 +1,19 @@
-.mx-2 {
+.m-2 {
 	margin: 0.5em;
+}
+
+button {
+  border: none;
+}
+
+button:disabled {
+  opacity: 0.3;
+  cursor: no-drop;
+}
+
+#kelasemen td:first-child {
+  display: flex;
+  align-items: center;
 }
 
 .btn-simpan,
@@ -18,8 +32,8 @@
   background: #e53935;
 }
 
-.btn-simpan:hover,
-.btn-hapus:hover {
+.btn-simpan:hover:enabled,
+.btn-hapus:hover:enabled {
 	opacity: 0.8;
 }
 
