@@ -7,7 +7,7 @@ async function loadJadwalYangDisimpan() {
 		const semuaJadwal = await db.getAll();
 		
 		if(semuaJadwal.length === 0) {
-			content.innerHTML = '<h5 class="xy-center">Belum ada jadwal yang disimpan</h5>';
+			content.innerHTML = '<h5 class="xy-center center-align">Belum ada jadwal yang disimpan</h5>';
 		} else {
 			content.innerHTML = '';
 			for(let jadwal of semuaJadwal) {

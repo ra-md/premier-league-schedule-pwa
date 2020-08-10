@@ -15,25 +15,30 @@ function loadJadwal() {
 
 				loading(content, '');
 
-				for(let match of matches) {
-					const convertToLocal = new Date(match.utcDate);
-					const date = convertToLocal.toString().split(' ').splice(0,5).join(' ');
+				if(matches.length !== 0) {
+					for(let match of matches) {
+						const convertToLocal = new Date(match.utcDate);
+						const date = convertToLocal.toString().split(' ').splice(0,5).join(' ');
 
-					const apakahSudahAdaDiIndexedDB = await db.getById(match.id.toString());
+						const apakahSudahAdaDiIndexedDB = await db.getById(match.id.toString());
 
-					content.innerHTML += `
-						<div class="col s6 responsive">
-							<div class="card">
-								<h6 class="left m-2">${date}</h6>
-								<button ${apakahSudahAdaDiIndexedDB ? 'disabled':''} id="${match.id}" class="right m-2 btn-simpan">Simpan</button>
-						    <div class="card-content">
-						    	<h5 class="center-align">${match.homeTeam.name}</h5>
-				    			<h6 class="center-align">vs</h6>
-						    	<h5 class="center-align">${match.awayTeam.name}</h5>
-						    </div>
-						  </div>
-						</div>`;
-				};
+						content.innerHTML += `
+							<div class="col s6 responsive">
+								<div class="card">
+									<h6 class="left m-2">${date}</h6>
+									<button ${apakahSudahAdaDiIndexedDB ? 'disabled':''} id="${match.id}" class="right m-2 btn-simpan">Simpan</button>
+							    <div class="card-content">
+							    	<h5 class="center-align">${match.homeTeam.name}</h5>
+					    			<h6 class="center-align">vs</h6>
+							    	<h5 class="center-align">${match.awayTeam.name}</h5>
+							    </div>
+							  </div>
+							</div>`;
+					};
+				} else {
+					content.innerHTML = '<h5 class="center-align">Musim 2018/2019 telah berakhir.</h5>';
+				}
+
 
 				saveMatch(matches);
 
