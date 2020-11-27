@@ -49,6 +49,12 @@ button:disabled {
   transform: translate(-50%, -50%);
 }
 
+.x-center {
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+}
+
 .lds-circle {
   display: inline-block;
 }
